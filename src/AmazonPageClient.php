@@ -8,6 +8,20 @@ final class AmazonPageClient
 {
     public function fetch(AmazonProductUrl $url): FetchResult
     {
+        if ($url->isShortUrl()) {
+            $resolvedUrl = $this->resolveShortUrl($url);
+            if ($resolvedUrl === null) {
+                return FetchResult::failure('Short URL did not resolve to an Amazon product page.');
+            }
+
+            $resolvedProductUrl = AmazonProductUrl::fromString($resolvedUrl);
+            if ($resolvedProductUrl === null) {
+                return FetchResult::failure('Short URL did not resolve to an Amazon product page.');
+            }
+
+            return $this->fetch($resolvedProductUrl);
+        }
+
         $curl = curl_init($url->original);
         if ($curl === false) {
             return FetchResult::failure('Could not initialize cURL.');
@@ -29,12 +43,38 @@ final class AmazonPageClient
         }
 
         $statusCode = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+        $effectiveUrl = (string) curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
 
         if ($statusCode >= 400) {
             return FetchResult::failure('Amazon returned HTTP ' . $statusCode . '.');
         }
 
-        return FetchResult::success((string) $body);
+        return FetchResult::success((string) $body, $effectiveUrl);
+    }
+
+    private function resolveShortUrl(AmazonProductUrl $url): ?string
+    {
+        $curl = curl_init($url->original);
+        if ($curl === false) {
+            return null;
+        }
+
+        curl_setopt_array($curl, [
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 Amazon 3D Model Parser',
+        ]);
+
+        curl_exec($curl);
+        $statusCode = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+        $effectiveUrl = (string) curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+
+        if ($statusCode >= 400 || !AmazonProductUrl::isAmazonDestination($effectiveUrl)) {
+            return null;
+        }
+
+        return $effectiveUrl;
     }
 
     /**

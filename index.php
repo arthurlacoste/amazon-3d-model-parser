@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$result->ok) {
             $error = 'Request failed: ' . $result->error;
         } else {
-            $modelLink = (new ModelLinkParser())->parse((string) $result->body, $productUrl);
+            $resolvedUrl = AmazonProductUrl::fromString((string) $result->effectiveUrl) ?? $productUrl;
+            $modelLink = (new ModelLinkParser())->parse((string) $result->body, $resolvedUrl);
             $error = $modelLink instanceof ModelLink ? null : 'No 3D model found.';
         }
     }

@@ -43,6 +43,12 @@ Example Amazon URL:
 https://www.amazon.fr/dp/B0CK3FLWYZ
 ```
 
+Amazon short links are accepted too:
+
+```txt
+https://amzn.to/4eMEcU2
+```
+
 ## Tests
 
 Run:

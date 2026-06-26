@@ -15,6 +15,7 @@
         <ul>
             <li>Découpage de la logique PHP en classes courtes dans <code>src/</code>.</li>
             <li>Validation URL Amazon centralisée dans <code>AmazonProductUrl</code>.</li>
+            <li>Support des shortlinks <code>https://amzn.to/...</code> avec validation de la destination finale Amazon.</li>
             <li>Client cURL isolé dans <code>AmazonPageClient</code>.</li>
             <li>Parsing des liens <code>/view-3d</code> et génération URL zip dans <code>ModelLinkParser</code>.</li>
             <li>UI nettoyée dans <code>index.php</code>, CSS externe dans <code>assets/css/home-light.css</code>.</li>
@@ -29,9 +30,11 @@
         <h2>Tests</h2>
         <ul>
             <li><code>composer test</code>: OK, 6 tests, 14 assertions.</li>
+            <li><code>composer test</code> après support shortlink: OK, 8 tests, 19 assertions.</li>
             <li><code>php -l</code> sur tous fichiers PHP hors vendor: OK.</li>
             <li><code>npm run test:browserless</code>: OK desktop + mobile.</li>
             <li>URL testée: <code>https://www.amazon.fr/IDMarket-Meuble-Phoenix-avec-tiroirs/dp/B0CK3FLWYZ/...</code></li>
+            <li>Shortlink testé: <code>https://amzn.to/4eMEcU2</code></li>
             <li>Viewer trouvé: <code>https://www.amazon.fr/view-3d?asin=B0CK3FLWYZ&amp;physicalId=916S6Wx1EtL&amp;productType=furniture&amp;affinity=Furniture&amp;rsp=&amp;extension=zip&amp;modelDescriptor=WOODSHOP</code></li>
             <li>Zip trouvé: <code>https://m.media-amazon.com/images/I/916S6Wx1EtL.zip</code></li>
         </ul>
@@ -51,6 +54,7 @@
             <li><code>index.php</code></li>
             <li><code>src/AmazonProductUrl.php</code></li>
             <li><code>src/AmazonPageClient.php</code></li>
+            <li><code>src/FetchResult.php</code></li>
             <li><code>src/ModelLinkParser.php</code></li>
             <li><code>assets/css/home-light.css</code></li>
             <li><code>tests/</code></li>
@@ -61,6 +65,7 @@
         <h2>Risques</h2>
         <ul>
             <li>Amazon peut changer HTML, headers nécessaires ou bloquer requêtes serveur.</li>
+            <li>Les shortlinks nécessitent deux requêtes: résolution, puis fetch de la page Amazon finale.</li>
             <li>Le <code>requestId</code> dans URL viewer varie à chaque test.</li>
             <li>Le fichier zip peut être inaccessible si Amazon invalide ou protège le modèle.</li>
         </ul>
