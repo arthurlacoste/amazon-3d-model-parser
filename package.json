@@ -1,0 +1,15 @@
+{
+  "name": "amazon-3d-model-parser",
+  "version": "1.0.0",
+  "description": "Extract Amazon 3D viewer and model archive URLs from product pages.",
+  "private": true,
+  "scripts": {
+    "test:browserless": "node tools/browserless-test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}

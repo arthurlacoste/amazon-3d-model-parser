@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>26-06-26 - Amazon 3D Model Parser</title>
+</head>
+<body>
+    <main>
+        <h1>26-06-26 - Amazon 3D Model Parser</h1>
+
+        <h2>Contexte</h2>
+        <p>Nettoyage et publication du parseur Amazon 3D. Nom public demandé: Amazon 3D Model Parser. Slug GitHub demandé: amazon-3d-model-parser.</p>
+
+        <h2>Ce qui a été fait</h2>
+        <ul>
+            <li>Découpage de la logique PHP en classes courtes dans <code>src/</code>.</li>
+            <li>Validation URL Amazon centralisée dans <code>AmazonProductUrl</code>.</li>
+            <li>Client cURL isolé dans <code>AmazonPageClient</code>.</li>
+            <li>Parsing des liens <code>/view-3d</code> et génération URL zip dans <code>ModelLinkParser</code>.</li>
+            <li>UI nettoyée dans <code>index.php</code>, CSS externe dans <code>assets/css/home-light.css</code>.</li>
+            <li>Tests PHPUnit ajoutés.</li>
+            <li>Test browserless Playwright ajouté dans <code>tools/browserless-test.js</code>.</li>
+            <li>README mis à jour.</li>
+        </ul>
+
+        <h2>Pourquoi</h2>
+        <p>Ancien fichier unique trop couplé. Séparation nécessaire pour tester la validation, le parsing et le rendu sans dépendre du réseau Amazon.</p>
+
+        <h2>Tests</h2>
+        <ul>
+            <li><code>composer test</code>: OK, 6 tests, 14 assertions.</li>
+            <li><code>php -l</code> sur tous fichiers PHP hors vendor: OK.</li>
+            <li><code>npm run test:browserless</code>: OK desktop + mobile.</li>
+            <li>URL testée: <code>https://www.amazon.fr/IDMarket-Meuble-Phoenix-avec-tiroirs/dp/B0CK3FLWYZ/...</code></li>
+            <li>Viewer trouvé: <code>https://www.amazon.fr/view-3d?asin=B0CK3FLWYZ&amp;physicalId=916S6Wx1EtL&amp;productType=furniture&amp;affinity=Furniture&amp;rsp=&amp;extension=zip&amp;modelDescriptor=WOODSHOP</code></li>
+            <li>Zip trouvé: <code>https://m.media-amazon.com/images/I/916S6Wx1EtL.zip</code></li>
+        </ul>
+
+        <h2>Captures</h2>
+        <figure>
+            <img src="screenshots/desktop-result.png" alt="Résultat desktop Amazon 3D Model Parser" width="720">
+            <figcaption>Desktop résultat.</figcaption>
+        </figure>
+        <figure>
+            <img src="screenshots/mobile-result.png" alt="Résultat mobile Amazon 3D Model Parser" width="390">
+            <figcaption>Mobile résultat.</figcaption>
+        </figure>
+
+        <h2>Fichiers concernés</h2>
+        <ul>
+            <li><code>index.php</code></li>
+            <li><code>src/AmazonProductUrl.php</code></li>
+            <li><code>src/AmazonPageClient.php</code></li>
+            <li><code>src/ModelLinkParser.php</code></li>
+            <li><code>assets/css/home-light.css</code></li>
+            <li><code>tests/</code></li>
+            <li><code>tools/browserless-test.js</code></li>
+            <li><code>README.md</code></li>
+        </ul>
+
+        <h2>Risques</h2>
+        <ul>
+            <li>Amazon peut changer HTML, headers nécessaires ou bloquer requêtes serveur.</li>
+            <li>Le <code>requestId</code> dans URL viewer varie à chaque test.</li>
+            <li>Le fichier zip peut être inaccessible si Amazon invalide ou protège le modèle.</li>
+        </ul>
+
+        <h2>Axes de progression</h2>
+        <ol>
+            <li>Ajouter cache court serveur pour limiter requêtes Amazon répétées.</li>
+            <li>Ajouter téléchargement optionnel du zip avec validation taille/type.</li>
+            <li>Ajouter extraction ASIN et normalisation URL produit avant requête.</li>
+            <li>Ajouter rate limiting côté serveur.</li>
+            <li>Ajouter CI GitHub Actions pour PHPUnit + browserless smoke test.</li>
+        </ol>
+    </main>
+</body>
+</html>

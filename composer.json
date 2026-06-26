@@ -1,0 +1,26 @@
+{
+  "name": "art/amazon-3d-model-parser",
+  "description": "Extract Amazon 3D viewer and model archive URLs from product pages.",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.2",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Amazon3DModelParser\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Amazon3DModelParser\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}
